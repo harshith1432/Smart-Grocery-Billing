@@ -1,0 +1,56 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.table th {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #495057;
+}
+
+.modal-content {
+    border-radius: 15px;
+}
+
+/* Billing Screen Styles */
+.bill-cart {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.total-row {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.grand-total {
+    font-size: 2rem;
+    color: #198754;
+}
+
+/* Invoice Styles */
+.invoice-box {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}

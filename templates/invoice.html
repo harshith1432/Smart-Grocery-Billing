@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{ bill.id }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .invoice-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 2rem;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+            border-radius: 8px;
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px dashed #dee2e6;
+            padding-bottom: 1rem;
+        }
+
+        .invoice-header h2 {
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+            letter-spacing: 1px;
+        }
+
+        .invoice-details {
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .grand-total-row {
+            font-size: 1.25rem;
+            font-weight: 800;
+            border-top: 2px dashed #dee2e6;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .invoice-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container d-flex flex-column align-items-center mb-4 no-print mt-4">
+        <div class="btn-group shadow-sm">
+            <a href="{{ url_for('billing') }}" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Back to
+                Billing</a>
+            <button onclick="window.print()" class="btn btn-primary fw-bold"><i class="bi bi-printer"></i> Print
+                Invoice</button>
+        </div>
+    </div>
+
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h2>SMART GROCERY</h2>
+            <div class="text-muted">123 Market Street, Food City</div>
+            <div class="text-muted">Phone: (555) 123-4567</div>
+            <div class="text-muted">GSTIN: 22AAAAA0000A1Z5</div>
+        </div>
+
+        <div class="invoice-details d-flex justify-content-between">
+            <div>
+                <strong>Bill No:</strong> #{{ bill.id }}<br>
+                <strong>Payment:</strong> {{ bill.payment_method }}
+            </div>
+            <div class="text-end">
+                <strong>Date:</strong> {{ bill.timestamp.strftime('%d-%m-%Y') }}<br>
+                <strong>Time:</strong> {{ bill.timestamp.strftime('%H:%M') }}
+            </div>
+        </div>
+
+        <table class="table table-borderless table-sm mb-4">
+            <thead>
+                <tr class="border-bottom border-dark">
+                    <th>Item</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-end">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set total_gst = namespace(value=0) %}
+                {% set subtotal = namespace(value=0) %}
+
+                {% for item in bill.items %}
+                {% set item_subtotal = item.price_at_time * item.quantity %}
+                {% set item_gst = item_subtotal * (item.gst_at_time / 100.0) %}
+                {% set item_total = item_subtotal + item_gst %}
+
+                {% set subtotal.value = subtotal.value + item_subtotal %}
+                {% set total_gst.value = total_gst.value + item_gst %}
+
+                <tr>
+                    <td>
+                        <div class="fw-bold">{{ item.product.name }}</div>
+                        <small class="text-muted">₹{{ "%.2f"|format(item.price_at_time) }} + {{ item.gst_at_time }}%
+                            GST</small>
+                    </td>
+                    <td class="text-center align-middle">{{ item.quantity }}</td>
+                    <td class="text-end align-middle">₹{{ "%.2f"|format(item_total) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totals-section">
+            <div class="totals-row text-muted">
+                <span>Subtotal</span>
+                <span>₹{{ "%.2f"|format(subtotal.value) }}</span>
+            </div>
+            <div class="totals-row text-muted">
+                <span>Total GST</span>
+                <span>₹{{ "%.2f"|format(total_gst.value) }}</span>
+            </div>
+            {% if bill.discount > 0 %}
+            <div class="totals-row text-danger">
+                <span>Discount</span>
+                <span>- ₹{{ "%.2f"|format(bill.discount) }}</span>
+            </div>
+            {% endif %}
+
+            <div class="totals-row grand-total-row">
+                <span>Grand Total</span>
+                <span>₹{{ "%.2f"|format(bill.total_amount) }}</span>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 text-muted small">
+            <p class="mb-1">Thank you for shopping with us!</p>
+            <p>Visit Again</p>
+        </div>
+    </div>
+
+    <script>
+        // Automatically open print dialog when page loads
+        window.addEventListener('load', function () {
+            // window.print(); // Uncomment in production to auto-print
+        });
+    </script>
+</body>
+
+</html>
