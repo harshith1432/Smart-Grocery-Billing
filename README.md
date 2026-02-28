@@ -52,7 +52,7 @@ Create a `.env` file in the root directory and add the following context (the pr
 FLASK_APP=app.py
 FLASK_ENV=development
 SECRET_KEY=super-secret-grocery-key-123
-DATABASE_URL=postgresql://neondb_owner:npg_S37kKgqUtGmf@ep-steep-king-aivy1dau-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresqlulr
 ```
 
 ### 4. Run the Application
