@@ -52,7 +52,7 @@ Create a `.env` file in the root directory and add the following context (the pr
 FLASK_APP=app.py
 FLASK_ENV=development
 SECRET_KEY=super-secret-grocery-key-123
-DATABASE_URL=postgresqlulr
+DATABASE_URL=postgresql
 ```
 
 ### 4. Run the Application
