@@ -151,7 +151,7 @@ def api_create_bill():
     bill_items = []
     
     try:
-        bill = Bill(payment_method=payment_method, discount=discount)
+        bill = Bill(payment_method=payment_method, discount=discount, total_amount=0.0)
         db.session.add(bill)
         db.session.flush() # to get bill.id
         
